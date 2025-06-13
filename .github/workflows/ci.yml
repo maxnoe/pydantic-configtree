@@ -23,6 +23,7 @@ jobs:
       - uses: pre-commit/action@v3.0.1
 
   tests:
+    needs: static-code-checks
     strategy:
       matrix:
         include:
@@ -70,6 +71,7 @@ jobs:
             -v
 
   docs:
+    needs: static-code-checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
