@@ -1,0 +1,89 @@
+name: CI
+
+
+# by not building all branches on push, we avoid the duplicated builds in PRs
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '**'
+  pull_request:
+
+
+env:
+  PYTEST_ADDOPTS: --color=yes
+
+jobs:
+  static-code-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - uses: pre-commit/action@v3.0.1
+
+  tests:
+    strategy:
+      matrix:
+        include:
+          # linux builds
+          - python-version: "3.11"
+            os: ubuntu-latest
+
+          - python-version: "3.12"
+            os: ubuntu-latest
+
+          - python-version: "3.13"
+            os: ubuntu-latest
+
+          # macos builds
+          - python-version: "3.11"
+            os: macos-latest
+
+          - python-version: "3.12"
+            os: macos-latest
+
+          - python-version: "3.13"
+            os: macos-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Update pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install the package
+        run: pip install .[test]
+
+      - name: Test with pytest
+        run: |
+          pytest --cov --cov-report=xml --cov-branch \
+            --doctest-modules \
+            -v
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install doc dependencies
+        run: |
+          pip install -e .[doc]
+
+      - name: Build docs
+        run: make -C docs html
