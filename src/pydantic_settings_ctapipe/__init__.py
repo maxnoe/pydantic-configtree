@@ -2,7 +2,6 @@
 
 from ._version import __version__
 
-
 #: Version of the package
 __version__ = __version__
 
