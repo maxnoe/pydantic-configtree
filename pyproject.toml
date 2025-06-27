@@ -75,6 +75,7 @@ convention = "numpy"
 # no documentation linting for test files
 "**/tests/**" = ["D"]
 "**/tests_*.py" = ["D"]
+"examples/*.py" = ["D"]
 
 [tool.ruff.format]
 quote-style = "double"
