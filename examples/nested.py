@@ -3,44 +3,12 @@ from pydantic_settings import (
     CliApp,
 )
 
+from pydantic_settings_ctapipe import Configurable
 from pydantic_settings_ctapipe.logging import LogConfig
 
 
 class Settings(BaseSettings):
     pass
-
-
-class ConfigurableMeta(type):
-    def __new__(cls, name, bases, dct):
-        config_cls = dct.get("config_cls")
-
-        # only validate concrete implementations, not the Configurable base class
-        if len(bases) > 0:
-            if config_cls is None:
-                raise TypeError(f"Class {name} must define a config_cls")
-
-            if not issubclass(config_cls, BaseSettings):
-                raise TypeError(
-                    f"{name}.config_cls must be a subclass of {BaseSettings}, got: {config_cls}"
-                )
-
-        return super().__new__(cls, name, bases, dct)
-
-
-class Configurable(metaclass=ConfigurableMeta):
-    config_cls = None
-
-    def __init__(self, settings: BaseSettings | None = None):
-        if self.config_cls is not None:
-            if settings is None:
-                settings = self.config_cls()
-
-            elif not isinstance(settings, self.config_cls):
-                raise TypeError(
-                    f"Expected an instance of {self.config_cls!r}, got {settings!r}"
-                )
-
-        self.settings = settings
 
 
 class SubConfig(Settings):
@@ -70,7 +38,7 @@ class Comp(Configurable):
         self.sub = Sub(settings=self.settings.sub)
 
     def do_something(self):
-        print(self.sub.do_something())
+        self.sub.do_something()
 
 
 class Tool(BaseSettings):
