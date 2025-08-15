@@ -66,6 +66,7 @@ extend-select = [
 ignore = [
     "COM812", # incompatible with ruff format
     "ISC001", # incompatible with ruff format
+    "N801", # we use __config__ for the config class
 ]
 
 [tool.ruff.lint.pydocstyle]
