@@ -86,6 +86,13 @@ def test_configurable_subclasses():
             super().__init__(config=config, parent=parent)
             self.interface = Interface.from_config(self.config.interface, parent=self)
 
+    assert len(Interface.non_abstract_subclasses()) == 2
+    base = "pydantic_settings_ctapipe.tests.test_configurable.test_configurable_subclasses.<locals>"
+    assert Interface.non_abstract_subclasses() == {
+        f"{base}.Foo": Foo,
+        f"{base}.Bar": Bar,
+    }
+
     comp = Component()
     assert comp.interface is None
 
