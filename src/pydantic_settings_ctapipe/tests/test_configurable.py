@@ -96,7 +96,7 @@ def test_configurable_subclasses():
     comp = Component()
     assert comp.interface is None
 
-    config = Component.__config__(interface=Bar.__config__(value=1.0))
+    config = Component.__config__(interface=Bar.__config__(value=1))
     component = Component(config=config)
     assert isinstance(component.interface, Bar)
 

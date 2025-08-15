@@ -46,16 +46,14 @@ class ConfigurableMeta(ABCMeta):
             },
         )
 
-        dct["__config__"] = config_cls
-        new_cls = super().__new__(cls, name, bases, dct)
-
         # only validate concrete implementations, not the Configurable base class or abstract classes
         if not issubclass(config_cls, Config):
             raise TypeError(
                 f"{name}.config_cls must be a subclass of {Config}, got: {config_cls.__bases__}"
             )
 
-        return new_cls
+        dct["__config__"] = config_cls
+        return super().__new__(cls, name, bases, dct)
 
 
 class Configurable(metaclass=ConfigurableMeta):
@@ -68,12 +66,13 @@ class Configurable(metaclass=ConfigurableMeta):
     ):
         if config is None:
             config = self.__config__()
+
         elif not isinstance(config, self.__config__):
             raise TypeError(
                 f"Expected an instance of {self.__config__!r}, got {config!r}"
             )
 
-        self.config = config
+        self.config: self.config_cls = config
         self._parent = weakref.ref(parent) if parent is not None else None
 
     @property
