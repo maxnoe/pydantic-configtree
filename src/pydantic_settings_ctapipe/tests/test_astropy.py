@@ -1,5 +1,6 @@
 import json
 
+import astropy.units as u
 import pytest
 from astropy.time import Time
 from pydantic import BaseModel, TypeAdapter, ValidationError
@@ -40,3 +41,20 @@ def test_time_model():
     # json should store ISOT UTC string
     parsed = json.loads(data.model_dump_json())
     assert parsed["timestamp"] == Time(t, precision=9).utc.isot
+
+
+@pytest.mark.parametrize("q", [5.2 * u.m, 12.3456789 * u.ms])
+def test_quantity_typeadapter(q):
+    from pydantic_settings_ctapipe.astropy import AstropyQuantity
+
+    ta = TypeAdapter(AstropyQuantity)
+
+    assert ta.validate_python(q) == q
+    assert (
+        ta.validate_python({"value": q.value, "unit": q.unit.to_string("vounit")}) == q
+    )
+    assert ta.validate_python(str(q)) == q
+
+    data_json = ta.dump_json(q)
+    assert ta.validate_json(data_json) == q
+    assert ta.validate_json(json.dumps(str(q))) == q
