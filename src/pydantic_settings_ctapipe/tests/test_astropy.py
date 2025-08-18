@@ -44,17 +44,34 @@ def test_time_model():
 
 
 @pytest.mark.parametrize("q", [5.2 * u.m, 12.3456789 * u.ms])
-def test_quantity_typeadapter(q):
+def test_quantity(q):
     from pydantic_settings_ctapipe.astropy import AstropyQuantity
 
     ta = TypeAdapter(AstropyQuantity)
 
     assert ta.validate_python(q) == q
+    assert type(ta.validate_python(q)) is u.Quantity
     assert (
         ta.validate_python({"value": q.value, "unit": q.unit.to_string("vounit")}) == q
     )
     assert ta.validate_python(str(q)) == q
 
     data_json = ta.dump_json(q)
+    assert type(ta.validate_json(data_json)) is u.Quantity
     assert ta.validate_json(data_json) == q
     assert ta.validate_json(json.dumps(str(q))) == q
+
+
+def test_quantity_with_unit():
+    from pydantic_settings_ctapipe.astropy import AstropyQuantity
+
+    ta = TypeAdapter(AstropyQuantity[u.m])
+
+    assert ta.validate_python(5 * u.m) == 5 * u.m
+
+    q = ta.validate_python(500 * u.cm)
+    assert q.unit == u.m
+    assert q.value == 5.0
+
+    with pytest.raises(ValidationError):
+        ta.validate_python(3 * u.s)

@@ -3,7 +3,7 @@
 from typing import Annotated, Any
 
 from astropy.time import Time
-from astropy.units import Quantity
+from astropy.units import Quantity, Unit
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 
@@ -38,13 +38,19 @@ AstropyTime = Annotated[
 ]
 
 
-class _AstropyQuantityAnnotation:
+class AstropyQuantity:
+    """
+    Type adapter for `astropy.time.Time`.
+
+    Serialization is implemented to a value/unit dict
+    and parsing additionally supports plain strings.
+    """
+
     @classmethod
     def __get_pydantic_core_schema__(
         cls, _source_type: Any, _handler: GetCoreSchemaHandler
     ) -> CoreSchema:
-        print("GET QUANTITY SCHEMA")
-
+        """Pydantic schema definition for astropy quantity."""
         dict_schema = core_schema.chain_schema(
             [
                 core_schema.typed_dict_schema(
@@ -85,5 +91,22 @@ class _AstropyQuantityAnnotation:
             ),
         )
 
+    def __class_getitem__(cls, unit: Unit):
+        """Implement support for AstropyQuantity[<unit>]."""
 
-AstropyQuantity = Annotated[Quantity, _AstropyQuantityAnnotation]
+        class _QuantityWithUnit:
+            @classmethod
+            def __get_pydantic_core_schema__(cls, _source_type: Any, _handler: Any):
+                base = AstropyQuantity.__get_pydantic_core_schema__(
+                    _source_type, _handler
+                )
+                return core_schema.chain_schema(
+                    [
+                        base,
+                        core_schema.no_info_plain_validator_function(
+                            lambda q: q.to(unit)
+                        ),
+                    ]
+                )
+
+        return Annotated[Quantity, _QuantityWithUnit]
