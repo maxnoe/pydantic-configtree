@@ -28,6 +28,8 @@ test = [
   "pytest",
   "pytest-cov",
   "packaging",
+  "pyyaml",
+  "tomlkit",
 ]
 
 doc = [
