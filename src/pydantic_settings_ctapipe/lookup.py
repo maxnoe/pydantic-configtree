@@ -121,6 +121,7 @@ class Lookup(Generic[ItemType]):
             json_schema=json_schema,
             python_schema=python_schema,
             serialization=core_schema.plain_serializer_function_ser_schema(
-                lambda v: v.entries
+                lambda v: v.entries,
+                return_schema=entries_schema,
             ),
         )

@@ -5,6 +5,8 @@ import pytest
 from astropy.time import Time
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
+from pydantic_settings_ctapipe.astropy import AstropyQuantity
+
 
 def test_time_typeadapter():
     from pydantic_settings_ctapipe.astropy import AstropyTime
@@ -75,3 +77,11 @@ def test_quantity_with_unit():
 
     with pytest.raises(ValidationError):
         ta.validate_python(3 * u.s)
+
+
+def test_dump_model_quantity():
+    class Foo(BaseModel):
+        q: AstropyQuantity[u.s] = 5 * u.s
+
+    assert Foo().model_dump() == {"q": {"value": 5.0, "unit": "s"}}
+    assert json.loads(Foo().model_dump_json()) == {"q": {"value": 5.0, "unit": "s"}}

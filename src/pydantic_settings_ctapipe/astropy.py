@@ -24,7 +24,7 @@ class _AstropyTimeTypeAnnotation:
             python_schema=core_schema.is_instance_schema(Time),
             json_schema=from_string,
             serialization=core_schema.plain_serializer_function_ser_schema(
-                lambda t: Time(t, precision=9).utc.isot, when_used="json"
+                lambda t: Time(t, precision=9).utc.isot,
             ),
         )
 
@@ -100,7 +100,7 @@ class AstropyQuantity:
                 base = AstropyQuantity.__get_pydantic_core_schema__(
                     _source_type, _handler
                 )
-                return core_schema.chain_schema(
+                with_unit = core_schema.chain_schema(
                     [
                         base,
                         core_schema.no_info_plain_validator_function(
@@ -108,5 +108,7 @@ class AstropyQuantity:
                         ),
                     ]
                 )
+                with_unit["serialization"] = base["serialization"]
+                return with_unit
 
         return Annotated[Quantity, _QuantityWithUnit]
