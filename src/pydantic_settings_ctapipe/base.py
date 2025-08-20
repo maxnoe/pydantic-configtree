@@ -1,5 +1,6 @@
 """Core definitions."""
 
+import logging
 import weakref
 from abc import ABCMeta
 from inspect import isabstract
@@ -63,20 +64,27 @@ class Configurable(metaclass=ConfigurableMeta):
         self,
         config: Config | None = None,
         parent: "Configurable | None" = None,
+        name: str | None = None,
     ):
+        self.name = name or self.__class__.__name__
+
         if config is None:
             config = self.__config__()
-
         elif not isinstance(config, self.__config__):
             raise TypeError(
                 f"Expected an instance of {self.__config__!r}, got {config!r}"
             )
 
-        self.config: self.config_cls = config
+        self.config: self.__config__ = config
         self._parent = weakref.ref(parent) if parent is not None else None
 
+        if self.parent is None:
+            self.log = logging.getLogger(self.__class__.__module__).getChild(self.name)
+        else:
+            self.log = self.parent.log.getChild(self.name)
+
     @property
-    def parent(self):
+    def parent(self) -> "Configurable | None":
         """The parent class of this class in the config hierarchy."""
         if self._parent is None:
             return None
@@ -104,7 +112,7 @@ class Configurable(metaclass=ConfigurableMeta):
         }
 
     @classmethod
-    def from_config(cls, config, parent=None, **kwargs):
+    def from_config(cls, config, parent=None, name=None, **kwargs) -> Self:
         """Create a new instance by selecting the correct subclass based on the config object."""
         if config is None:
             return None
@@ -123,7 +131,7 @@ class Configurable(metaclass=ConfigurableMeta):
         if subcls is None:
             raise ValueError(f"{config.cls} is not a known subclass of {cls}")
 
-        return subcls(config=config, parent=parent, **kwargs)
+        return subcls(config=config, parent=parent, name=name, **kwargs)
 
 
 def _non_abstract_subclasses(base):

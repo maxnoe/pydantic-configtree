@@ -1,11 +1,12 @@
 import json
+import sys
 from textwrap import dedent
 
 import pytest
 import tomlkit
 import yaml
 from pydantic import ValidationError
-from pydantic_settings import CliApp, SettingsConfigDict, SettingsError
+from pydantic_settings import SettingsConfigDict, SettingsError
 
 from pydantic_settings_ctapipe import Config, Configurable, Tool
 
@@ -32,32 +33,39 @@ class ExampleTool(Tool):
     This computes stuff.
     """
 
-    value: int = 1
-    component: Component.configurable_subclasses() = Foo.__config__(foo_option=2)
+    class __config__(Tool.__config__):
+        """This is the help for the CLI."""
 
-    model_config = SettingsConfigDict(
-        env_prefix="TEST_TOOL_",
-    )
+        value: int = 1
+        component: Component.configurable_subclasses() = Foo.__config__(foo_option=2)
+
+        model_config = SettingsConfigDict(
+            env_prefix="TEST_TOOL_",
+        )
 
     def setup(self):
-        self._component = Component.from_config(config=self.component, parent=self)
+        self.component = Component.from_config(
+            config=self.config.component, parent=self
+        )
 
     def run(self):
-        print(f"{self.model_dump_json()}")
+        print(self.config.model_dump_json())
 
 
-def test_help(capsys):
-    with pytest.raises(SystemExit):
-        CliApp.run(ExampleTool, ["--help"])
+def test_help(capsys, monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["example-tool", "--help"])
+    with pytest.raises(SystemExit) as e_info:
+        ExampleTool()
 
-    captured = capsys.readouterr()
+    assert e_info.value.code == 0
 
     # help should include the docstring
-    assert dedent(ExampleTool.__doc__).strip() in captured.out
+    captured = capsys.readouterr()
+    assert dedent(ExampleTool.__config__.__doc__).strip() in captured.out
 
 
 @pytest.mark.parametrize("fmt", [".json", ".yml", ".yaml", ".toml"])
-def test_single_config_file(capsys, tmp_path, fmt):
+def test_single_config_file(capsys, tmp_path, fmt, monkeypatch):
     config = {"value": 2, "component": {"cls": "Bar", "common": 3, "bar_option": 4}}
 
     if fmt == ".json":
@@ -71,18 +79,22 @@ def test_single_config_file(capsys, tmp_path, fmt):
 
     config_path.write_text(config_dump)
 
-    CliApp.run(ExampleTool, ["-c", str(config_path)])
+    monkeypatch.setattr(sys, "argv", ["example-tool", "-c", str(config_path)])
+    tool = ExampleTool()
+    tool.start()
 
     result_config = json.loads(capsys.readouterr().out)
     for k, v in config.items():
         assert result_config[k] == v
 
 
-def test_invalid_value():
+def test_invalid_value(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["example-tool", "--value=1.2"])
     with pytest.raises(ValidationError):
-        CliApp.run(ExampleTool, ["--value=1.2"])
+        ExampleTool()
 
 
-def test_invalid_option():
+def test_invalid_option(monkeypatch):
+    monkeypatch.setattr(sys, "argv", ["example-tool", "--non-existent-option=1.0"])
     with pytest.raises(SettingsError):
-        CliApp.run(ExampleTool, ["--non-existent-option=1.0"])
+        ExampleTool()
