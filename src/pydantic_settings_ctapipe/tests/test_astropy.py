@@ -37,7 +37,7 @@ def test_time_model():
     data = HasTime(timestamp=t)
     assert data.timestamp == t
 
-    # check that python model dump still contains astropy time
+    assert isinstance(data.model_dump()["timestamp"], str)
     assert data.model_dump()["timestamp"] == t
 
     # json should store ISOT UTC string
