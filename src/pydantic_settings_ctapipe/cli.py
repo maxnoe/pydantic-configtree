@@ -14,6 +14,10 @@ from .base import Config, Configurable
 from .logging import DEFAULT_LOG_CONFIG, LogConfig
 from .sources import CliConfigSettingsSource
 
+__all__ = [
+    "Tool",
+]
+
 
 class Tool(Configurable):
     """Base class for command-line tools."""
