@@ -44,7 +44,7 @@ At the moment is mainly for logging, see :ref:`logging`.
    ...
    ...     def __init__(self, config=None, parent=None, name=None):
    ...         super().__init__(config=config, parent=parent, name=name)
-   ...         self.foo = Foo(config=self.config.foo, parent=self, name=name)
+   ...         self.foo = Foo(config=self.config.foo, parent=self, name="foo")
    ...
    ...     def do_stuff(self):
    ...         return self.foo.do_stuff() + 1
@@ -117,3 +117,14 @@ Which can be used in a parent class like this:
 .. _logging:
 Logging
 -------
+
+Each configurable has a `logging.Logger` instance, with the hierarchy of loggers reflecting the hierarchy of
+the configuration tree:
+
+.. code::
+
+   >>> b = Bar()
+   >>> b.log
+   <Logger __main__.Bar (INFO)>
+   >>> b.foo.log
+   <Logger __main__.Bar.foo (INFO)>
