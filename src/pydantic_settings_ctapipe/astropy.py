@@ -7,6 +7,11 @@ from astropy.units import Quantity, Unit
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import CoreSchema, core_schema
 
+__all__ = [
+    "AstropyTime",
+    "AstropyQuantity",
+]
+
 
 class _AstropyTimeTypeAnnotation:
     @classmethod
