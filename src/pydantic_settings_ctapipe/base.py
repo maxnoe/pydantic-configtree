@@ -77,9 +77,7 @@ class Configurable(metaclass=ConfigurableMeta):
         if config is None:
             config = self.__config__()
         elif not isinstance(config, self.__config__):
-            raise TypeError(
-                f"Expected an instance of {self.__config__!r}, got {config!r}"
-            )
+            config = self.__config__.model_validate(config)
 
         self.config: self.__config__ = config
         self._parent = weakref.ref(parent) if parent is not None else None

@@ -7,6 +7,10 @@ from typing import Any, Generic, TypeVar, get_args, get_origin
 from pydantic import GetCoreSchemaHandler
 from pydantic_core import CoreSchema, SchemaValidator, core_schema
 
+__all__ = [
+    "Lookup",
+]
+
 ItemType = TypeVar("T")
 
 
@@ -32,6 +36,16 @@ class Lookup(Generic[ItemType]):
 
     str index values are matched using fnmatch, all other types are compared
     for equality.
+
+    Examples
+    --------
+    >>> lookup = Lookup([("type", "*", 1), ("type", "LST", 2), ("id", 1, 3)])
+    >>> lookup.get(type="LST", id=1)
+    3
+    >>> lookup.get(type="LST", id=2)
+    2
+    >>> lookup.get(type="MST", id=5)
+    1
     """
 
     def __init__(self, entries: Sequence[tuple[str, Any, ItemType]]):

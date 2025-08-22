@@ -55,6 +55,13 @@ def test_configurable_nested():
     assert parent.config.sub.value == 3.0
     assert parent.sub.config.value == 3.0
 
+    # check with dict config
+    config = dict(option="bar", sub=dict(value=3.0))
+    parent = Parent(config=config)
+    assert parent.config.option == "bar"
+    assert parent.config.sub.value == 3.0
+    assert parent.sub.config.value == 3.0
+
 
 def test_configurable_subclasses():
     """Test for the mechanism of configuring subclasses of an interface."""
