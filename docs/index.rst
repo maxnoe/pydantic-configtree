@@ -10,7 +10,8 @@ Extensions to ``pydantic-settings`` for ctapipe.
     :caption: Contents:
 
     installation
-    reference
+    quickstart
+    reference/index
     changelog
 
 

@@ -3,6 +3,7 @@
 import logging
 import weakref
 from abc import ABCMeta
+from collections.abc import Mapping
 from inspect import isabstract
 from typing import Annotated, Literal, Self, Union
 
@@ -121,19 +122,24 @@ class Configurable(metaclass=ConfigurableMeta):
         if config is None:
             return None
 
+        if isinstance(config, Mapping):
+            subcls_name = config["cls"]
+        else:
+            subcls_name = config.cls
+
         subclasses = cls.non_abstract_subclasses()
 
         # first try by fqdn
-        subcls = subclasses.get(config.cls)
+        subcls = subclasses.get(subcls_name)
 
         # fallback to name in case not found by fqdn
         if subcls is None:
             by_name = {v.__name__: v for v in subclasses.values()}
-            subcls = by_name.get(config.cls)
+            subcls = by_name.get(subcls_name)
 
         # error in case we still didn't find it
         if subcls is None:
-            raise ValueError(f"{config.cls} is not a known subclass of {cls}")
+            raise ValueError(f"{subcls_name} is not a known subclass of {cls}")
 
         return subcls(config=config, parent=parent, name=name, **kwargs)
 

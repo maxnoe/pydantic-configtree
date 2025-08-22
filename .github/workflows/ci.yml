@@ -68,6 +68,7 @@ jobs:
         run: |
           pytest --cov --cov-report=xml --cov-branch \
             --doctest-modules \
+            --doctest-glob="*.rst" \
             -v
 
   docs:

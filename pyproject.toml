@@ -101,7 +101,7 @@ omit = [
 
 [tool.pytest.ini_options]
 minversion = "7"
-testpaths = ["src"]
+testpaths = ["src", "docs"]
 log_cli_level = "INFO"
 xfail_strict = true
 # print summary of failed tests, force errors if settings are misspelled
