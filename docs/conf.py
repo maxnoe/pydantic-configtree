@@ -5,6 +5,7 @@ This file only contains a selection of the most common options. For a full
 list see the documentation:
 https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
+from functools import partial
 
 # -- Project information -----------------------------------------------------
 import pydantic_configtree
@@ -26,10 +27,13 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
-    # "sphinx.ext.autosummary",
     "numpydoc",
     "sphinx_changelog",
 ]
+autosummary_generate = False
+
+def setup(app):
+    app.connect('builder-inited', lambda app: app.config.__setattr__('autosummary_generate', False))
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []
@@ -49,6 +53,7 @@ intersphinx_mapping = {
     "pydantic": ("https://docs.pydantic.dev/latest/", None),
 }
 
+
 # -- Options for HTML output -------------------------------------------------
 
 html_theme = "pydata_sphinx_theme"
@@ -63,7 +68,7 @@ html_title = project
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
 
-autosummary_generate = True
 autodoc_default_options = {
-    "inherited-members": False,
+    "inherited-members": True,
+    "members": True,
 }

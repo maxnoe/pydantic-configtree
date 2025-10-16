@@ -11,7 +11,6 @@ Extensions to ``pydantic-settings`` for ctapipe.
 
     installation
     quickstart
-    reference/index
     changelog
 
 
