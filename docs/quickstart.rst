@@ -115,6 +115,7 @@ Which can be used in a parent class like this:
 
 
 .. _logging:
+
 Logging
 -------
 
