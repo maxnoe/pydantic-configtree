@@ -1,9 +1,9 @@
-pydantic_settings_ctapipe.astropy
+pydantic_configtree.astropy
 =================================
 
-.. currentmodule:: pydantic_settings_ctapipe.astropy
+.. currentmodule:: pydantic_configtree.astropy
 
 
-.. automodule:: pydantic_settings_ctapipe.astropy
+.. automodule:: pydantic_configtree.astropy
    :members:
    :special-members:

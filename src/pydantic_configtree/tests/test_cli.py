@@ -8,7 +8,7 @@ import yaml
 from pydantic import ValidationError
 from pydantic_settings import SettingsConfigDict, SettingsError
 
-from pydantic_settings_ctapipe import Config, Configurable, Tool
+from pydantic_configtree import Config, Configurable, Tool
 
 
 class Component(Configurable):

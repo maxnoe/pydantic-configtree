@@ -1,8 +1,8 @@
-pydantic_settings_ctapipe.lookup
+pydantic_configtree.lookup
 ================================
 
-.. currentmodule:: pydantic_settings_ctapipe.lookup
+.. currentmodule:: pydantic_configtree.lookup
 
 
-.. automodule:: pydantic_settings_ctapipe.lookup
+.. automodule:: pydantic_configtree.lookup
    :members:

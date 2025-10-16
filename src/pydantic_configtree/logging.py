@@ -121,7 +121,7 @@ DEFAULT_LOG_CONFIG = LogConfig(
         "default": Formatter(
             format="%(asctime)s %(levelname)s [%(name)s]: %(message)s",
             datefmt="%Y-%m-%dT%H:%M:%S.%f%z",
-            class_="pydantic_settings_ctapipe.logging.ISOFormatter",
+            class_="pydantic_configtree.logging.ISOFormatter",
         ),
     },
     handlers={

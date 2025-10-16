@@ -7,12 +7,12 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 
 # -- Project information -----------------------------------------------------
-import pydantic_settings_ctapipe
+import pydantic_configtree
 
-project = "pydantic-settings-ctapipe"
+project = "pydantic-configtree"
 copyright = "CTAO"
 author = "CTAO Computing Department"
-version = pydantic_settings_ctapipe.__version__
+version = pydantic_configtree.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
