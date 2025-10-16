@@ -3,7 +3,7 @@ requires = ["setuptools>=65", "setuptools_scm[toml]>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pydantic-settings-ctapipe"
+name = "pydantic-configtree"
 description = "Extensions of pydantic-settings for use as ctapipe configuration system"
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -47,11 +47,11 @@ dev = [
 
 # we can use self-references to simplify all, needs to match project.name defined above
 all = [
-  "pydantic-settings-ctapipe[test,dev,doc]",
+  "pydantic-configtree[test,dev,doc]",
 ]
 
 [tool.setuptools_scm]
-write_to = "src/pydantic_settings_ctapipe/_version.py"
+write_to = "src/pydantic_configtree/_version.py"
 
 [tool.ruff.lint]
 extend-select = [
@@ -95,8 +95,8 @@ line_length = 88
 relative_files = true
 source = ["src"]
 omit = [
-    "src/pydantic_settings_ctapipe/_version.py",
-    "src/pydantic_settings_ctapipe/_dev_version/*"
+    "src/pydantic_configtree/_version.py",
+    "src/pydantic_configtree/_dev_version/*"
 ]
 
 [tool.pytest.ini_options]
@@ -128,7 +128,7 @@ ignore = [
 skip = "*.fits,*.fits.fz"
 
 [tool.towncrier]
-package = "pydantic_settings_ctapipe"
+package = "pydantic_configtree"
 directory = "docs/changes"
 filename = "CHANGES.rst"
 template = "docs/changes/template.rst"
@@ -136,7 +136,7 @@ underlines = ["-", "~", "^"]
 # Let towncrier create proper links to the merged MR.
 # By default, towncrier connects everything to issues.
 # We rather want to connect it to merge request
-issue_format = "`!{issue} <https://github.com/maxnoe/pydantic-settings-ctapipe/pull/{issue}>`__"
+issue_format = "`!{issue} <https://github.com/maxnoe/pydantic-configtree/pull/{issue}>`__"
 
 [tool.towncrier.fragment.feature]
     name = "New Features"

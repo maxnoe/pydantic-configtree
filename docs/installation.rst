@@ -14,8 +14,8 @@ and then install the package in development mode:
 
 .. code-block:: shell
 
-   $ git clone git@github.com:maxnoe/pydantic-settings-ctapipe
-   $ cd pydantic-settings-ctapipe
+   $ git clone git@github.com:maxnoe/pydantic-configtree
+   $ cd pydantic-configtree
    $ python -m venv venv
    $ source venv/bin/activate
    $ pip install -e '.[all]'

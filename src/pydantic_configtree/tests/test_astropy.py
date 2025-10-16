@@ -5,11 +5,11 @@ import pytest
 from astropy.time import Time
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
-from pydantic_settings_ctapipe.astropy import AstropyQuantity
+from pydantic_configtree.astropy import AstropyQuantity
 
 
 def test_time_typeadapter():
-    from pydantic_settings_ctapipe.astropy import AstropyTime
+    from pydantic_configtree.astropy import AstropyTime
 
     ta = TypeAdapter(AstropyTime)
 
@@ -28,7 +28,7 @@ def test_time_typeadapter():
 
 
 def test_time_model():
-    from pydantic_settings_ctapipe.astropy import AstropyTime
+    from pydantic_configtree.astropy import AstropyTime
 
     class HasTime(BaseModel):
         timestamp: AstropyTime
@@ -47,7 +47,7 @@ def test_time_model():
 
 @pytest.mark.parametrize("q", [5.2 * u.m, 12.3456789 * u.ms])
 def test_quantity(q):
-    from pydantic_settings_ctapipe.astropy import AstropyQuantity
+    from pydantic_configtree.astropy import AstropyQuantity
 
     ta = TypeAdapter(AstropyQuantity)
 
@@ -65,7 +65,7 @@ def test_quantity(q):
 
 
 def test_quantity_with_unit():
-    from pydantic_settings_ctapipe.astropy import AstropyQuantity
+    from pydantic_configtree.astropy import AstropyQuantity
 
     ta = TypeAdapter(AstropyQuantity[u.m])
 

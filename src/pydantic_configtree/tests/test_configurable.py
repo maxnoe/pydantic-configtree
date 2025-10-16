@@ -3,7 +3,7 @@ from abc import abstractmethod
 import pytest
 from pydantic import ValidationError
 
-from pydantic_settings_ctapipe import Config, Configurable
+from pydantic_configtree import Config, Configurable
 
 
 def test_configurable_basic():
@@ -94,7 +94,7 @@ def test_configurable_subclasses():
             self.interface = Interface.from_config(self.config.interface, parent=self)
 
     assert len(Interface.non_abstract_subclasses()) == 2
-    base = "pydantic_settings_ctapipe.tests.test_configurable.test_configurable_subclasses.<locals>"
+    base = "pydantic_configtree.tests.test_configurable.test_configurable_subclasses.<locals>"
     assert Interface.non_abstract_subclasses() == {
         f"{base}.Foo": Foo,
         f"{base}.Bar": Bar,

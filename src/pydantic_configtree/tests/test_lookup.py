@@ -1,5 +1,5 @@
-from pydantic_settings_ctapipe import Config
-from pydantic_settings_ctapipe.lookup import Lookup
+from pydantic_configtree import Config
+from pydantic_configtree.lookup import Lookup
 
 
 def test_lookup():
@@ -35,7 +35,7 @@ def test_lookup():
 def test_lookup_quantity():
     import astropy.units as u
 
-    from pydantic_settings_ctapipe.astropy import AstropyQuantity
+    from pydantic_configtree.astropy import AstropyQuantity
 
     class Settings(Config):
         option: Lookup[AstropyQuantity[u.m]]

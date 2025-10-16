@@ -1,7 +1,7 @@
 API Reference
 =============
 
-.. currentmodule:: pydantic_settings_ctapipe
+.. currentmodule:: pydantic_configtree
 
 
 .. toctree::

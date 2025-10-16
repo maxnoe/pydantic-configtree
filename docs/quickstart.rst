@@ -9,7 +9,7 @@ Let's start with a simple class that is configurable:
 
 .. code::
 
-   >>> from pydantic_settings_ctapipe import Config, Configurable
+   >>> from pydantic_configtree import Config, Configurable
 
    >>> class Foo(Configurable):
    ...

@@ -1,9 +1,9 @@
-pydantic_settings_ctapipe.cli
+pydantic_configtree.cli
 =============================
 
-.. currentmodule:: pydantic_settings_ctapipe.cli
+.. currentmodule:: pydantic_configtree.cli
 
 
-.. automodule:: pydantic_settings_ctapipe.cli
+.. automodule:: pydantic_configtree.cli
    :members:
    :special-members:
