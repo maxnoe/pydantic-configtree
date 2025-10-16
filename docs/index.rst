@@ -1,4 +1,4 @@
-pydantic-settings-ctapipe
+pydantic-configtree
 =========================
 
 Extensions to ``pydantic-settings`` for ctapipe.
@@ -10,7 +10,7 @@ Extensions to ``pydantic-settings`` for ctapipe.
     :caption: Contents:
 
     installation
-    reference
+    quickstart
     changelog
 
 

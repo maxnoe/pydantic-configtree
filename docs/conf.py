@@ -7,12 +7,12 @@ https://www.sphinx-doc.org/en/master/usage/configuration.html
 """
 
 # -- Project information -----------------------------------------------------
-import pydantic_settings_ctapipe
+import pydantic_configtree
 
-project = "pydata-sphinx-theme"
+project = "pydantic-configtree"
 copyright = "CTAO"
 author = "CTAO Computing Department"
-version = pydantic_settings_ctapipe.__version__
+version = pydantic_configtree.__version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -26,10 +26,10 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx.ext.intersphinx",
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
     "numpydoc",
     "sphinx_changelog",
 ]
+autosummary_generate = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []
@@ -46,7 +46,9 @@ default_role = "py:obj"
 # intersphinx allows referencing other packages sphinx docs
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3/", None),
+    "pydantic": ("https://docs.pydantic.dev/latest/", None),
 }
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -55,8 +57,14 @@ html_theme_options = dict(
     navigation_with_keys=False,
     navbar_center=["version-switcher", "navbar-nav"],
 )
+html_title = project
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = []
+
+autodoc_default_options = {
+    "inherited-members": True,
+    "members": True,
+}
