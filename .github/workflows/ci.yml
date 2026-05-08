@@ -28,23 +28,23 @@ jobs:
       matrix:
         include:
           # linux builds
-          - python-version: "3.11"
-            os: ubuntu-latest
-
           - python-version: "3.12"
             os: ubuntu-latest
 
           - python-version: "3.13"
+            os: ubuntu-latest
+
+          - python-version: "3.14"
             os: ubuntu-latest
 
           # macos builds
-          - python-version: "3.11"
-            os: macos-latest
-
           - python-version: "3.12"
             os: macos-latest
 
           - python-version: "3.13"
+            os: macos-latest
+
+          - python-version: "3.14"
             os: macos-latest
 
     runs-on: ${{ matrix.os }}

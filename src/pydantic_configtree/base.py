@@ -4,8 +4,10 @@ import logging
 import weakref
 from abc import ABCMeta
 from collections.abc import Mapping
+from functools import reduce
 from inspect import isabstract
-from typing import Annotated, Literal, Self, Union
+from operator import or_
+from typing import Annotated, Literal, Self
 
 from pydantic import Field, create_model, model_validator
 from pydantic_settings import BaseSettings
@@ -105,7 +107,7 @@ class Configurable(metaclass=ConfigurableMeta):
         """
         subclasses = _non_abstract_subclasses(cls)
         config_classes = tuple(cls.__config__ for cls in subclasses)
-        union = Union.__getitem__(config_classes)
+        union = reduce(or_, config_classes)
         return Annotated[union, Field(discriminator="cls")]
 
     @classmethod

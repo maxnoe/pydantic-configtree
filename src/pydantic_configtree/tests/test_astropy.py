@@ -5,33 +5,32 @@ import pytest
 from astropy.time import Time
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
-from pydantic_configtree.astropy import AstropyQuantity
-
 
 def test_time_typeadapter():
-    from pydantic_configtree.astropy import AstropyTime
+    from astropydantic import AstroPydanticTime
 
-    ta = TypeAdapter(AstropyTime)
+    ta = TypeAdapter(AstroPydanticTime)
 
     t = Time.now()
     assert ta.validate_python(t) == t
     assert ta.validate_json(ta.dump_json(t)) == t
 
-    with pytest.raises(ValidationError):
-        ta.validate_python("2020-01-01T20:00:00")
+    assert ta.validate_python("2020-01-01T20:00:00") == Time(
+        "2020-01-01T20:00:00", scale="utc"
+    )
 
-    with pytest.raises(ValidationError):
-        ta.validate_python(1755511106.116)
-
-    with pytest.raises(ValidationError):
-        ta.validate_json("1755511106.116")
+    # Due to a rounding error in astropydantic going through datetime
+    # comparing unix is equal, comparing Time not
+    expected = Time(1755511106.116, format="unix").unix
+    assert ta.validate_python(1755511106.116).unix == expected
+    assert ta.validate_json("1755511106.116").unix == expected
 
 
 def test_time_model():
-    from pydantic_configtree.astropy import AstropyTime
+    from astropydantic import AstroPydanticTime
 
     class HasTime(BaseModel):
-        timestamp: AstropyTime
+        timestamp: AstroPydanticTime
 
     t = Time.now()
     data = HasTime(timestamp=t)
@@ -47,9 +46,9 @@ def test_time_model():
 
 @pytest.mark.parametrize("q", [5.2 * u.m, 12.3456789 * u.ms])
 def test_quantity(q):
-    from pydantic_configtree.astropy import AstropyQuantity
+    from astropydantic import AstroPydanticQuantity
 
-    ta = TypeAdapter(AstropyQuantity)
+    ta = TypeAdapter(AstroPydanticQuantity)
 
     assert ta.validate_python(q) == q
     assert type(ta.validate_python(q)) is u.Quantity
@@ -65,9 +64,9 @@ def test_quantity(q):
 
 
 def test_quantity_with_unit():
-    from pydantic_configtree.astropy import AstropyQuantity
+    from astropydantic import AstroPydanticQuantity
 
-    ta = TypeAdapter(AstropyQuantity[u.m])
+    ta = TypeAdapter(AstroPydanticQuantity[u.m])
 
     assert ta.validate_python(5 * u.m) == 5 * u.m
 
@@ -80,8 +79,10 @@ def test_quantity_with_unit():
 
 
 def test_dump_model_quantity():
-    class Foo(BaseModel):
-        q: AstropyQuantity[u.s] = 5 * u.s
+    from astropydantic import AstroPydanticQuantity
 
-    assert Foo().model_dump() == {"q": {"value": 5.0, "unit": "s"}}
+    class Foo(BaseModel):
+        q: AstroPydanticQuantity[u.s] = 5 * u.s
+
+    assert Foo().model_dump() == {"q": u.Quantity(5.0, u.s)}
     assert json.loads(Foo().model_dump_json()) == {"q": {"value": 5.0, "unit": "s"}}
