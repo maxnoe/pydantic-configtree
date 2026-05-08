@@ -24,7 +24,12 @@ def test_lookup():
     print(settings.option)
     print(settings.model_dump_json())
 
-    # Test the behavior
+    # Only lookup by type
+    assert settings.option.get(type="xxx") == 0.5
+    assert settings.option.get(type="LST") == 5.0
+    assert settings.option.get(type="MST") == 2.5
+
+    # Usual case: lookup using full information
     assert settings.option.get(type="LST", id=3) == 5.0  # type has match
     assert settings.option.get(type="ABC", id=1) == 3.5  # id has match
     assert settings.option.get(type="ABC", id=99) == 0.5  # type match on *
