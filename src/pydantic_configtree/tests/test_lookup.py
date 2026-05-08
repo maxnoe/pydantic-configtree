@@ -34,11 +34,10 @@ def test_lookup():
 
 def test_lookup_quantity():
     import astropy.units as u
-
-    from pydantic_configtree.astropy import AstropyQuantity
+    from astropydantic import AstroPydanticQuantity
 
     class Settings(Config):
-        option: Lookup[AstropyQuantity[u.m]]
+        option: Lookup[AstroPydanticQuantity[u.m]]
 
     # Example data
     data = {
